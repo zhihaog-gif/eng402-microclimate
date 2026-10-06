@@ -1,4 +1,4 @@
-function plot_figure_5_4_multihop()
+function plot_multihop()
 
 clc;
 close all;
@@ -394,11 +394,11 @@ end
 
 pngFile = fullfile( ...
     filePath, ...
-    'Figure_5_4_Multihop_Sequence_Receptions.png');
+    'Multihop_Sequence_Receptions.png');
 
 pdfFile = fullfile( ...
     filePath, ...
-    'Figure_5_4_Multihop_Sequence_Receptions.pdf');
+    'Multihop_Sequence_Receptions.pdf');
 
 exportgraphics( ...
     fig, ...

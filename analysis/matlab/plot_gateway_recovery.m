@@ -1,4 +1,4 @@
-function plot_figure_5_7_gateway_recovery()
+function plot_gateway_recovery()
 
 clc;
 close all;
@@ -608,11 +608,11 @@ end
 
 pngFile = fullfile( ...
     dataPath, ...
-    'Figure_5_7_Gateway_Recovery.png');
+    'Gateway_Recovery.png');
 
 pdfFile = fullfile( ...
     dataPath, ...
-    'Figure_5_7_Gateway_Recovery.pdf');
+    'Gateway_Recovery.pdf');
 
 exportgraphics( ...
     fig, ...
