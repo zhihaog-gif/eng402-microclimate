@@ -1,0 +1,17 @@
+[Unit]
+Description=ENG402 Data Processing and Visualisation
+After=eng402-gateway.service
+Wants=eng402-gateway.service
+
+[Service]
+Type=oneshot
+User=pi
+Group=pi
+WorkingDirectory=/home/pi/eng402_gateway_data/code
+
+ExecStart=/usr/bin/python3 /home/pi/eng402_gateway_data/code/process_real_data.py
+ExecStart=/usr/bin/python3 /home/pi/eng402_gateway_data/code/analyse_mesh.py
+ExecStart=/usr/bin/python3 /home/pi/eng402_gateway_data/code/generate_visualisations.py
+
+StandardOutput=append:/home/pi/eng402_gateway_data/logs/processing_service.log
+StandardError=append:/home/pi/eng402_gateway_data/logs/processing_service_error.log

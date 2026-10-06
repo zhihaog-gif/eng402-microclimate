@@ -1,0 +1,11 @@
+[Unit]
+Description=Run ENG402 Processing Every 5 Minutes
+
+[Timer]
+OnBootSec=3min
+OnUnitActiveSec=5min
+Unit=eng402-processing.service
+Persistent=true
+
+[Install]
+WantedBy=timers.target

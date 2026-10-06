@@ -1,0 +1,1404 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>ENG402 Real-time Dashboard</title>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f3f5f7;
+            margin: 0;
+            padding: 30px;
+            color: #1f2933;
+        }
+
+        .container {
+            max-width: 1300px;
+            margin: auto;
+        }
+
+        h1 {
+            margin-bottom: 6px;
+        }
+
+        .subtitle {
+            margin-top: 0;
+            color: #5b6770;
+        }
+
+        .summary {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            margin: 24px 0;
+        }
+
+        .summary-card,
+        .chart-card {
+            background: white;
+            border-radius: 10px;
+            padding: 18px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        }
+
+        .summary-label {
+            font-size: 14px;
+            color: #66737f;
+        }
+
+        .summary-value {
+            font-size: 28px;
+            font-weight: bold;
+            margin-top: 8px;
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            background: white;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        }
+
+        th,
+        td {
+            border: 1px solid #dfe3e6;
+            padding: 12px;
+            text-align: center;
+        }
+
+        th {
+            background: #2c3e50;
+            color: white;
+        }
+
+        tr:nth-child(even) {
+            background: #f8fafb;
+        }
+
+        .status-online {
+            color: #11823b;
+            font-weight: bold;
+        }
+
+        .status-offline {
+            color: #b42318;
+            font-weight: bold;
+        }
+
+        .status-unavailable {
+            color: #667085;
+            font-weight: bold;
+        }
+
+        .value-valid {
+            font-weight: bold;
+            color: #1d4ed8;
+        }
+
+        .value-missing {
+            color: #98a2b3;
+        }
+
+        .charts {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 18px;
+            margin-top: 26px;
+        }
+
+        .chart-card h2 {
+            margin-top: 0;
+            font-size: 20px;
+        }
+
+        .chart-wrapper {
+            position: relative;
+            height: 320px;
+        }
+
+        .no-data {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 260px;
+            color: #98a2b3;
+            font-size: 18px;
+        }
+
+
+
+        .analysis-section {
+            margin-top: 28px;
+        }
+
+        .analysis-title {
+            margin-bottom: 6px;
+            font-size: 28px;
+        }
+
+        .analysis-description {
+            margin-top: 0;
+            margin-bottom: 20px;
+            color: #667085;
+        }
+
+        .analysis-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 18px;
+        }
+
+        .analysis-card {
+            background: white;
+            border-radius: 10px;
+            padding: 18px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        }
+
+        .analysis-card h2 {
+            margin-top: 0;
+            margin-bottom: 14px;
+            font-size: 20px;
+        }
+
+        .analysis-image-wrapper {
+            min-height: 320px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #f8fafc;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .analysis-image {
+            display: none;
+            width: 100%;
+            height: auto;
+            max-height: 520px;
+            object-fit: contain;
+        }
+
+        .analysis-placeholder {
+            padding: 40px 20px;
+            color: #98a2b3;
+            text-align: center;
+            line-height: 1.6;
+        }
+
+
+
+        .footer {
+            margin-top: 18px;
+            font-size: 13px;
+            color: #667085;
+        }
+
+
+
+.health-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 16px;
+    margin: 24px 0;
+}
+
+.health-card {
+    background: white;
+    border-radius: 10px;
+    padding: 18px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    border-left: 6px solid #98a2b3;
+}
+
+.health-label {
+    font-size: 14px;
+    color: #667085;
+}
+
+.health-value {
+    font-size: 25px;
+    font-weight: bold;
+    margin-top: 8px;
+}
+
+.health-detail {
+    margin-top: 7px;
+    font-size: 13px;
+    color: #667085;
+}
+
+.health-healthy {
+    border-left-color: #16a34a;
+}
+
+.health-healthy .health-value {
+    color: #15803d;
+}
+
+.health-warning {
+    border-left-color: #d97706;
+}
+
+.health-warning .health-value {
+    color: #b45309;
+}
+
+.health-critical {
+    border-left-color: #dc2626;
+}
+
+.health-critical .health-value {
+    color: #b91c1c;
+}
+
+
+
+        .mesh-quality-section {
+            margin-top: 26px;
+        }
+
+        .mesh-quality-card {
+            background: white;
+            border-radius: 10px;
+            padding: 22px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        }
+
+        .mesh-quality-card h2 {
+            margin-top: 0;
+            margin-bottom: 6px;
+        }
+
+        .mesh-quality-summary {
+            margin-bottom: 22px;
+            color: #667085;
+        }
+
+        .mesh-quality-row {
+            display: grid;
+            grid-template-columns: 100px 1fr 70px;
+            gap: 14px;
+            align-items: center;
+            margin: 15px 0;
+        }
+
+        .mesh-quality-name {
+            font-weight: bold;
+        }
+
+        .mesh-quality-track {
+            width: 100%;
+            height: 20px;
+            background: #e5e7eb;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .mesh-quality-fill {
+            height: 100%;
+            width: 0;
+            border-radius: 10px;
+            transition: width 0.4s ease;
+        }
+
+        .mesh-fill-healthy {
+            background: #16a34a;
+        }
+
+        .mesh-fill-warning {
+            background: #d97706;
+        }
+
+        .mesh-fill-critical {
+            background: #dc2626;
+        }
+
+        .mesh-quality-value {
+            text-align: right;
+            font-weight: bold;
+        }
+
+
+
+        .system-logs-section {
+            margin-top: 28px;
+            background: white;
+            border-radius: 10px;
+            padding: 22px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        }
+
+        .system-logs-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 18px;
+            margin-bottom: 18px;
+        }
+
+        .system-logs-header h2 {
+            margin: 0 0 6px;
+        }
+
+        .system-logs-header p {
+            margin: 0;
+            color: #667085;
+        }
+
+        #refreshLogsButton {
+            border: 0;
+            border-radius: 7px;
+            padding: 10px 15px;
+            background: #2c3e50;
+            color: white;
+            cursor: pointer;
+        }
+
+        .log-group {
+            margin-top: 18px;
+        }
+
+        .log-group h3 {
+            margin-bottom: 8px;
+        }
+
+        .log-box {
+            background: #111827;
+            color: #d1fae5;
+            border-radius: 8px;
+            padding: 15px;
+            max-height: 260px;
+            overflow: auto;
+            white-space: pre-wrap;
+            font-family: monospace;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        .log-empty {
+            color: #98a2b3;
+            font-style: italic;
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        @media (max-width: 900px) {
+
+            .analysis-grid {
+                grid-template-columns: 1fr;
+            }  
+            .summary,
+            .charts {
+                grid-template-columns: 1fr;
+            }
+
+            body {
+                padding: 15px;
+            }
+
+            table {
+                font-size: 13px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+<div class="container">
+
+    <h1>ENG402 Real-time Dashboard</h1>
+
+    <p class="subtitle">
+        Automatic refresh every 5 seconds
+    </p>
+
+
+<div class="health-grid">
+
+    <div class="health-card">
+        <div class="health-label">Gateway Health</div>
+        <div id="gatewayHealth" class="health-value">
+            Loading...
+        </div>
+        <div id="gatewayMessage" class="health-detail"></div>
+    </div>
+
+    <div class="health-card">
+        <div class="health-label">USB Backup</div>
+        <div id="usbStatus" class="health-value">
+            Loading...
+        </div>
+        <div id="usbLastSync" class="health-detail"></div>
+    </div>
+
+    <div class="health-card">
+        <div class="health-label">Average Packet Rate</div>
+        <div id="averagePacketRate" class="health-value">
+            Loading...
+        </div>
+        <div class="health-detail">packets/min</div>
+    </div>
+
+    <div class="health-card">
+        <div class="health-label">Packet Loss</div>
+        <div id="packetLoss" class="health-value">
+            Loading...
+        </div>
+        <div id="packetLossDetail" class="health-detail"></div>
+    </div>
+
+    <div class="health-card">
+        <div class="health-label">Mesh Quality</div>
+        <div id="meshQuality" class="health-value">
+            Loading...
+        </div>
+        <div id="meshNodes" class="health-detail"></div>
+    </div>
+
+</div>
+
+
+
+
+    <div class="summary">
+
+        <div class="summary-card">
+            <div class="summary-label">Last Update</div>
+            <div class="summary-value" style="font-size:18px;">
+                {{ updated }}
+            </div>
+        </div>
+
+        <div class="summary-card">
+            <div class="summary-label">Total Nodes</div>
+            <div class="summary-value">
+                {{ sensors|length }}
+            </div>
+        </div>
+
+        <div class="summary-card">
+            <div class="summary-label">Connected Nodes</div>
+            <div id="connectedNodes" class="summary-value">
+                {{ sensors|selectattr("communication_status", "equalto", "Received")|list|length }}
+            </div>
+        </div>
+
+        <div class="summary-card">
+            <div class="summary-label">Environmental Data</div>
+            <div class="summary-value" style="font-size:18px;">
+                {% if sensors|selectattr("environmental_status", "equalto", "Valid")|list|length > 0 %}
+                    Available
+                {% else %}
+                    Unavailable
+                {% endif %}
+            </div>
+        </div>
+
+    </div>
+
+    <table>
+        <tr>
+            <th>Sensor</th>
+            <th>Receive Time</th>
+            <th>Temperature</th>
+            
+            <th>Pressure</th>
+            <th>Communication</th>
+            <th>Environment</th>
+        </tr>
+
+        {% for s in sensors %}
+        <tr>
+            <td><strong>{{ s.sensor_name }}</strong></td>
+
+            <td>{{ s.receive_time }}</td>
+
+            <td>
+                {% if s.temperature_c == s.temperature_c %}
+                    <span class="value-valid">
+                        {{ "%.2f"|format(s.temperature_c) }} °C
+                    </span>
+                {% else %}
+                    <span class="value-missing">No data</span>
+                {% endif %}
+            </td>
+
+            
+
+            <td>
+                {% if s.pressure_hpa == s.pressure_hpa %}
+                    <span class="value-valid">
+                        {{ "%.2f"|format(s.pressure_hpa) }} hPa
+                    </span>
+                {% else %}
+                    <span class="value-missing">No data</span>
+                {% endif %}
+            </td>
+
+
+
+
+
+  
+
+            <td
+                class="communication-cell"
+                data-sensor="{{ s.sensor_name }}"
+            >
+                {% if s.communication_status == "Received" %}
+                   <span class="status-online">● Online</span>
+                {% else %}
+                   <span class="status-offline">● Offline</span>
+                {% endif %}
+            </td>
+
+
+
+
+
+            <td>
+                {% if s.environmental_status == "Valid" %}
+                    <span class="status-online">Valid</span>
+                {% else %}
+                    <span class="status-unavailable">Unavailable</span>
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <div class="charts">
+
+        <div class="chart-card">
+            <h2>Packet Count</h2>
+            <div class="chart-wrapper">
+                <canvas id="packetChart"></canvas>
+            </div>
+        </div>
+
+        <div class="chart-card">
+            <h2>Temperature</h2>
+            <div id="temperatureEmpty" class="no-data">
+                No valid temperature data
+            </div>
+            <div class="chart-wrapper">
+                <canvas id="temperatureChart"></canvas>
+            </div>
+        </div>
+
+        
+
+        <div class="chart-card">
+            <h2>Atmospheric Pressure</h2>
+            <div id="pressureEmpty" class="no-data">
+                No valid pressure data
+            </div>
+            <div class="chart-wrapper">
+                <canvas id="pressureChart"></canvas>
+            </div>
+        </div>
+
+    </div>
+
+
+<section class="mesh-quality-section">
+
+    <div class="mesh-quality-card">
+
+        <h2>Mesh Quality by Sensor</h2>
+
+        <div
+            id="meshQualitySummary"
+            class="mesh-quality-summary"
+        >
+            Loading node quality...
+        </div>
+
+        <div id="meshQualityRows"></div>
+
+    </div>
+
+</section>
+
+
+
+
+<section class="analysis-section">
+
+    <h2 class="analysis-title">
+
+
+<section class="system-logs-section">
+
+    <div class="system-logs-header">
+        <div>
+            <h2>System Logs</h2>
+            <p>
+                Recent Gateway, processing and USB backup
+                events.
+            </p>
+        </div>
+
+        <button
+            id="refreshLogsButton"
+            type="button"
+        >
+            Refresh Logs
+        </button>
+    </div>
+
+    <div id="systemLogsContainer">
+        Loading system logs...
+    </div>
+
+</section>
+
+
+
+
+
+        Environmental Analysis
+    </h2>
+
+    <p class="analysis-description">
+        Latest processed environmental figures generated
+        automatically by the Raspberry Pi gateway.
+    </p>
+
+    <div class="analysis-grid">
+
+        <div class="analysis-card">
+            <h2>Temperature Time Series</h2>
+
+            <div class="analysis-image-wrapper">
+                <img
+                    id="temperatureAnalysisImage"
+                    class="analysis-image"
+                    alt="Temperature time-series analysis"
+                >
+
+                <div
+                    id="temperatureAnalysisPlaceholder"
+                    class="analysis-placeholder"
+                >
+                    Temperature analysis unavailable.<br>
+                    Waiting for valid BMP280 temperature data.
+                </div>
+            </div>
+        </div>
+
+        <div class="analysis-card">
+            <h2>Atmospheric Pressure Time Series</h2>
+
+            <div class="analysis-image-wrapper">
+                <img
+                    id="pressureAnalysisImage"
+                    class="analysis-image"
+                    alt="Atmospheric-pressure time-series analysis"
+                >
+
+                <div
+                    id="pressureAnalysisPlaceholder"
+                    class="analysis-placeholder"
+                >
+                    Pressure analysis unavailable.<br>
+                    Waiting for valid BMP280 pressure data.
+                </div>
+            </div>
+        </div>
+
+        <div class="analysis-card">
+            <h2>IDW Temperature Map</h2>
+
+            <div class="analysis-image-wrapper">
+                <img
+                    id="idwAnalysisImage"
+                    class="analysis-image"
+                    alt="IDW temperature map"
+                >
+
+                <div
+                    id="idwAnalysisPlaceholder"
+                    class="analysis-placeholder"
+                >
+                    IDW map unavailable.<br>
+                    Valid measurements from multiple sensor
+                    locations are required.
+                </div>
+            </div>
+        </div>
+
+        <div class="analysis-card">
+            <h2>Frost Risk Map</h2>
+
+            <div class="analysis-image-wrapper">
+                <img
+                    id="frostAnalysisImage"
+                    class="analysis-image"
+                    alt="Frost-risk analysis map"
+                >
+
+                <div
+                    id="frostAnalysisPlaceholder"
+                    class="analysis-placeholder"
+                >
+                    Frost-risk map unavailable.<br>
+                    Waiting for valid spatial temperature data.
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</section>
+
+
+
+
+
+
+
+
+
+
+
+    <div class="footer">
+        Source: {{ source_file }}<br>
+        ENG402 Raspberry Pi Gateway Monitoring System
+    </div>
+
+</div>
+
+<script>
+const chartColours = [
+    "#2563eb",
+    "#16a34a",
+    "#dc2626",
+    "#d97706"
+];
+
+const charts = {};
+
+function prepareDatasets(datasets) {
+    return datasets.map((dataset, index) => ({
+        label: dataset.label,
+        data: dataset.data,
+        borderColor: chartColours[index % chartColours.length],
+        backgroundColor: chartColours[index % chartColours.length],
+        borderWidth: 2,
+        pointRadius: 0,
+        tension: 0.2,
+        spanGaps: true
+    }));
+}
+
+function createOrUpdateChart(
+    chartName,
+    canvasId,
+    labels,
+    datasets,
+    yTitle
+) {
+    const canvas = document.getElementById(canvasId);
+
+    if (!canvas) {
+        return;
+    }
+
+    if (charts[chartName]) {
+        charts[chartName].data.labels = labels;
+        charts[chartName].data.datasets =
+            prepareDatasets(datasets);
+        charts[chartName].update("none");
+        return;
+    }
+
+    charts[chartName] = new Chart(canvas, {
+        type: "line",
+        data: {
+            labels: labels,
+            datasets: prepareDatasets(datasets)
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            animation: false,
+            interaction: {
+                mode: "index",
+                intersect: false
+            },
+            scales: {
+                x: {
+                    ticks: {
+                        maxTicksLimit: 10
+                    }
+                },
+                y: {
+                    title: {
+                        display: true,
+                        text: yTitle
+                    }
+                }
+            }
+        }
+    });
+}
+
+function showChartOrMessage(
+    key,
+    canvasId,
+    emptyId,
+    chartTitle
+) {
+    const chartData = key;
+
+    const canvas = document.getElementById(canvasId);
+    const emptyMessage = document.getElementById(emptyId);
+
+    if (
+        !chartData ||
+        !chartData.datasets ||
+        chartData.datasets.length === 0
+    ) {
+        if (canvas) {
+            canvas.parentElement.style.display = "none";
+        }
+
+        if (emptyMessage) {
+            emptyMessage.style.display = "flex";
+        }
+
+        return false;
+    }
+
+    if (canvas) {
+        canvas.parentElement.style.display = "block";
+    }
+
+    if (emptyMessage) {
+        emptyMessage.style.display = "none";
+    }
+
+    return true;
+}
+
+async function refreshCharts() {
+    try {
+        const response = await fetch(
+            "/api/charts?time=" + Date.now()
+        );
+
+        const data = await response.json();
+
+        createOrUpdateChart(
+            "packet",
+            "packetChart",
+            data.packet_count.labels,
+            data.packet_count.datasets,
+            "Packets"
+        );
+
+        if (
+            showChartOrMessage(
+                data.temperature,
+                "temperatureChart",
+                "temperatureEmpty"
+            )
+        ) {
+            createOrUpdateChart(
+                "temperature",
+                "temperatureChart",
+                data.temperature.labels,
+                data.temperature.datasets,
+                "Temperature (°C)"
+            );
+        }
+
+        
+
+
+        if (
+            showChartOrMessage(
+                data.pressure,
+                "pressureChart",
+                "pressureEmpty"
+            )
+        ) {
+            createOrUpdateChart(
+                "pressure",
+                "pressureChart",
+                data.pressure.labels,
+                data.pressure.datasets,
+                "Pressure (hPa)"
+            );
+        }
+
+    } catch (error) {
+        console.error("Chart refresh failed:", error);
+    }
+}
+
+
+
+
+function setHealthClass(element, level) {
+    const card = element.closest(".health-card");
+
+    card.classList.remove(
+        "health-healthy",
+        "health-warning",
+        "health-critical"
+    );
+
+    if (level === "healthy") {
+        card.classList.add("health-healthy");
+    } else if (level === "warning") {
+        card.classList.add("health-warning");
+    } else {
+        card.classList.add("health-critical");
+    }
+}
+
+async function refreshHealth() {
+    try {
+        const response = await fetch(
+            "/api/health?time=" + Date.now()
+        );
+
+        const data = await response.json();
+
+        const gatewayHealth =
+            document.getElementById("gatewayHealth");
+
+        gatewayHealth.textContent =
+            data.gateway.status;
+
+        document.getElementById(
+            "gatewayMessage"
+        ).textContent = data.gateway.message;
+
+        setHealthClass(
+            gatewayHealth,
+            data.gateway.level
+        );
+
+        const usbStatus =
+            document.getElementById("usbStatus");
+
+        usbStatus.textContent =
+            data.usb.status;
+
+        document.getElementById(
+            "usbLastSync"
+        ).textContent =
+            data.usb.last_sync
+                ? "Last sync: " + data.usb.last_sync
+                : data.usb.message;
+
+        setHealthClass(
+            usbStatus,
+            data.usb.level
+        );
+
+        document.getElementById(
+            "averagePacketRate"
+        ).textContent =
+            Number(
+                data.packets.average_packet_rate
+            ).toFixed(2);
+
+        const packetLoss =
+            document.getElementById("packetLoss");
+
+        packetLoss.textContent =
+            Number(
+                data.packets.packet_loss_percent
+            ).toFixed(2) + "%";
+
+        document.getElementById(
+            "packetLossDetail"
+        ).textContent =
+            data.packets.missing_packets +
+            " estimated missing packets";
+
+        if (
+            data.packets.packet_loss_percent < 5
+        ) {
+            setHealthClass(
+                packetLoss,
+                "healthy"
+            );
+        } else if (
+            data.packets.packet_loss_percent < 15
+        ) {
+            setHealthClass(
+                packetLoss,
+                "warning"
+            );
+        } else {
+            setHealthClass(
+                packetLoss,
+                "critical"
+            );
+        }
+
+        const meshQuality =
+            document.getElementById("meshQuality");
+
+        if (
+            data.nodes.connected_nodes ===
+            data.nodes.total_nodes
+        ) {
+            meshQuality.textContent = "Excellent";
+            setHealthClass(
+                meshQuality,
+                "healthy"
+            );
+        } else if (
+            data.nodes.connected_nodes >=
+            data.nodes.total_nodes - 1
+        ) {
+            meshQuality.textContent = "Warning";
+            setHealthClass(
+                meshQuality,
+                "warning"
+            );
+        } else {
+            meshQuality.textContent = "Poor";
+            setHealthClass(
+                meshQuality,
+                "critical"
+            );
+        }
+
+        document.getElementById(
+            "meshNodes"
+        ).textContent =
+            data.nodes.connected_nodes +
+            " / " +
+            data.nodes.total_nodes +
+            " nodes online";
+
+
+        document.getElementById(
+            "connectedNodes"
+        ).textContent =
+            data.nodes.connected_nodes;
+
+
+const nodeStatusMap = {};
+
+data.nodes.node_statuses.forEach(
+    function (node) {
+        nodeStatusMap[node.sensor_name] = node;
+    }
+);
+
+document.querySelectorAll(
+    ".communication-cell"
+).forEach(function (cell) {
+    const sensorName = cell.dataset.sensor;
+    const nodeStatus = nodeStatusMap[sensorName];
+
+    if (!nodeStatus) {
+        return;
+    }
+
+    if (nodeStatus.online) {
+        cell.innerHTML =
+            '<span class="status-online">● Online</span>';
+    } else {
+        cell.innerHTML =
+            '<span class="status-offline">● Offline</span>';
+    }
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        const qualityContainer =
+            document.getElementById(
+                "meshQualityRows"
+            );
+
+        qualityContainer.innerHTML = "";
+
+        data.nodes.node_statuses.forEach(
+            function (node) {
+                const row =
+                    document.createElement("div");
+
+                row.className =
+                    "mesh-quality-row";
+
+                const name =
+                    document.createElement("div");
+
+                name.className =
+                    "mesh-quality-name";
+
+                name.textContent =
+                    node.sensor_name;
+
+                const track =
+                    document.createElement("div");
+
+                track.className =
+                    "mesh-quality-track";
+
+                const fill =
+                    document.createElement("div");
+
+                fill.className =
+                    "mesh-quality-fill";
+
+                if (
+                    node.quality_level ===
+                    "healthy"
+                ) {
+                    fill.classList.add(
+                        "mesh-fill-healthy"
+                    );
+                } else if (
+                    node.quality_level ===
+                    "warning"
+                ) {
+                    fill.classList.add(
+                        "mesh-fill-warning"
+                    );
+                } else {
+                    fill.classList.add(
+                        "mesh-fill-critical"
+                    );
+                }
+
+                fill.style.width =
+                    node.quality_percent + "%";
+
+                track.appendChild(fill);
+
+                const value =
+                    document.createElement("div");
+
+                value.className =
+                    "mesh-quality-value";
+
+                value.textContent =
+                    node.quality_percent + "%";
+
+                row.appendChild(name);
+                row.appendChild(track);
+                row.appendChild(value);
+
+                qualityContainer.appendChild(row);
+            }
+        );
+
+        document.getElementById(
+            "meshQualitySummary"
+        ).textContent =
+            data.gateway.status +
+            " — " +
+            data.nodes.connected_nodes +
+            " / " +
+            data.nodes.total_nodes +
+            " nodes online";
+
+
+
+
+
+    } catch (error) {
+        console.error(
+            "Health refresh failed:",
+            error
+        );
+    }
+}
+
+
+
+
+function updateAnalysisImage(
+    figureType,
+    imageId,
+    placeholderId
+) {
+    const image =
+        document.getElementById(imageId);
+
+    const placeholder =
+        document.getElementById(placeholderId);
+
+    const testImage = new Image();
+
+    testImage.onload = function () {
+        image.src = testImage.src;
+        image.style.display = "block";
+        placeholder.style.display = "none";
+    };
+
+    testImage.onerror = function () {
+        image.removeAttribute("src");
+        image.style.display = "none";
+        placeholder.style.display = "block";
+    };
+
+    testImage.src =
+        "/analysis/" +
+        figureType +
+        "?time=" +
+        Date.now();
+}
+
+
+function refreshAnalysisImages() {
+    updateAnalysisImage(
+        "temperature",
+        "temperatureAnalysisImage",
+        "temperatureAnalysisPlaceholder"
+    );
+
+    updateAnalysisImage(
+        "pressure",
+        "pressureAnalysisImage",
+        "pressureAnalysisPlaceholder"
+    );
+
+    updateAnalysisImage(
+        "idw",
+        "idwAnalysisImage",
+        "idwAnalysisPlaceholder"
+    );
+
+    updateAnalysisImage(
+        "frost",
+        "frostAnalysisImage",
+        "frostAnalysisPlaceholder"
+    );
+}
+
+
+
+async function refreshSystemLogs() {
+    const container =
+        document.getElementById(
+            "systemLogsContainer"
+        );
+
+    try {
+        const response = await fetch(
+            "/api/logs?time=" + Date.now()
+        );
+
+        const data = await response.json();
+
+        container.innerHTML = "";
+
+        data.logs.forEach(function (group) {
+            const wrapper =
+                document.createElement("div");
+
+            wrapper.className = "log-group";
+
+            const title =
+                document.createElement("h3");
+
+            title.textContent =
+                group.title +
+                " (" +
+                group.file +
+                ")";
+
+            wrapper.appendChild(title);
+
+            if (group.lines.length === 0) {
+                const empty =
+                    document.createElement("div");
+
+                empty.className =
+                    "log-empty";
+
+                empty.textContent =
+                    "No log entries available.";
+
+                wrapper.appendChild(empty);
+            } else {
+                const logBox =
+                    document.createElement("div");
+
+                logBox.className = "log-box";
+                logBox.textContent =
+                    group.lines.join("\n");
+
+                wrapper.appendChild(logBox);
+            }
+
+            container.appendChild(wrapper);
+        });
+
+    } catch (error) {
+        container.textContent =
+            "Failed to load system logs.";
+
+        console.error(
+            "Log refresh failed:",
+            error
+        );
+    }
+}
+
+document.getElementById(
+    "refreshLogsButton"
+).addEventListener(
+    "click",
+    refreshSystemLogs
+);
+
+
+
+
+
+
+refreshCharts();
+refreshHealth();
+refreshAnalysisImages();
+refreshSystemLogs();
+
+setInterval(refreshCharts, 5000);
+setInterval(refreshHealth, 5000);
+setInterval(refreshAnalysisImages, 30000);
+setInterval(refreshSystemLogs, 30000);
+
+</script>
+
+</body>
+</html>

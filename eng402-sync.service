@@ -1,0 +1,6 @@
+[Unit]
+Description=ENG402 USB Sync Service
+
+[Service]
+Type=oneshot
+ExecStart=/home/pi/sync_eng402.sh

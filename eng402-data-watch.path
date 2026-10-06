@@ -1,0 +1,9 @@
+[Unit]
+Description=Watch ENG402 raw data for changes
+
+[Path]
+PathModified=/home/pi/eng402_gateway_data/raw
+Unit=eng402-data-watch.service
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,6 @@
+Flask
+pyserial
+numpy
+pandas
+matplotlib
+openpyxl

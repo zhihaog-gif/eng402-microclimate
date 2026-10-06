@@ -1,0 +1,14 @@
+[Unit]
+Description=ENG402 Real-time Dashboard
+After=network.target
+
+[Service]
+Type=simple
+User=pi
+WorkingDirectory=/home/pi/eng402_gateway_data/dashboard
+ExecStart=/usr/bin/python3 /home/pi/eng402_gateway_data/dashboard/realtime_dashboard.py
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

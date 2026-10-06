@@ -1,0 +1,6 @@
+[Unit]
+Description=ENG402 Real-time USB Sync
+
+[Service]
+Type=oneshot
+ExecStart=/bin/bash -c "sleep 30 && /home/pi/sync_eng402.sh"

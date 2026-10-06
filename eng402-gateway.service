@@ -1,0 +1,17 @@
+[Unit]
+Description=ENG402 Raspberry Pi Gateway
+After=multi-user.target
+
+[Service]
+Type=simple
+User=pi
+Group=pi
+WorkingDirectory=/home/pi/eng402_gateway_data/code
+ExecStart=/usr/bin/python3 /home/pi/eng402_gateway_data/code/gateway.py
+Restart=always
+RestartSec=5
+StandardOutput=append:/home/pi/eng402_gateway_data/logs/gateway_service.log
+StandardError=append:/home/pi/eng402_gateway_data/logs/gateway_service_error.log
+
+[Install]
+WantedBy=multi-user.target
