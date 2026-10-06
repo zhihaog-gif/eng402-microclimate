@@ -12,7 +12,7 @@ def main():
     root = args.directory.resolve()
     records = []
     for path in sorted(root.rglob('*')):
-        if not path.is_file() or '__pycache__' in path.parts:
+        if not path.is_file() or any(part in {'.git', '__pycache__'} for part in path.relative_to(root).parts):
             continue
         relative = path.relative_to(root).as_posix()
         if relative in {'SHA256SUMS', 'file_manifest.csv'}:

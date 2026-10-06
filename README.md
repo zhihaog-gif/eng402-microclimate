@@ -53,20 +53,17 @@ are in `environment/`; `requirements.txt` lists direct Python dependencies.
 
 ## Analysis
 
-Run MATLAB scripts from `analysis/matlab/` and choose the requested input
-files. The relay script is named `plot_figure_5_4_multihop.m` to match its
-main function. Figure numbers can be adjusted when inserting plots into
-the thesis.
+Run the MATLAB files from `analysis/matlab/` and select the requested CSV files.
 
 | MATLAB file | Plot |
 | --- | --- |
 | `plot_sensor_temperature.m` | Temperature |
 | `plot_sensor_pressure.m` | Pressure |
 | `plot_ABCD_runtime_19_20Sep.m` | Four-node reception, 19 Sep 22:56 to 20 Sep 11:00 |
-| `plot_figure_5_4_multihop.m` | Relay experiment |
-| `plot_figure_5_4_2_offline_operation.m` | Offline gateway operation |
-| `plot_figure_5_6.m` | Cold-event records |
-| `plot_figure_5_7_gateway_recovery.m` | USB serial recovery |
+| `plot_multihop.m` | Relay experiment |
+| `plot_offline_operation.m` | Offline gateway operation |
+| `plot_figure.m` | Cold-event records |
+| `plot_gateway_recovery.m` | USB serial recovery |
 
 The 11:00 timeline is a separate display window. The main experiment and
 battery analysis end at 20 September 2026, 09:42:37. The battery test used
