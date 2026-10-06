@@ -1,0 +1,13 @@
+__pycache__/
+*.py[cod]
+.venv/
+*.log
+*.bak
+*~
+figures/
+ABCD_runtime_output/
+raw/
+status/
+processed/
+errors/
+
