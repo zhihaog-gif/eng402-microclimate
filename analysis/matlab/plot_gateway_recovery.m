@@ -296,9 +296,7 @@ confirmedAbsentSeconds = seconds( ...
     tFirstAbsent);
 
 fprintf('\n');
-fprintf('========================================================\n');
 fprintf('GATE03 SERIAL RECOVERY TEST RESULTS\n');
-fprintf('========================================================\n');
 
 fprintf('Last serial PRESENT before loss : %s\n', ...
     datestr( ...
@@ -625,9 +623,7 @@ exportgraphics( ...
     'ContentType','vector');
 
 fprintf('\n');
-fprintf('========================================================\n');
 fprintf('FINAL FIGURE EXPORTED\n');
-fprintf('========================================================\n');
 
 fprintf('PNG:\n%s\n\n',pngFile);
 
