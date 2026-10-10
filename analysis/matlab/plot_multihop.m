@@ -66,7 +66,6 @@ B = sortrows(B,'receive_dt');
 D = sortrows(D,'receive_dt');
 
 fprintf('MULTI-HOP DATA SUMMARY\n');
-fprintf('====================================================\n');
 fprintf('A records : %d\n',height(A));
 fprintf('B records : %d\n',height(B));
 fprintf('D records : %d\n',height(D));
@@ -120,7 +119,6 @@ P4_end = A_first.receive_dt(end);
 P5_end = A_direct.receive_dt(end);
 
 fprintf('PHASE INFORMATION\n');
-fprintf('====================================================\n');
 
 fprintf('P1 start : %s\n', ...
     datestr(P1_start,'yyyy-mm-dd HH:MM:SS.FFF'));
@@ -151,7 +149,6 @@ fprintf('A reception gap = %.3f s\n',gapSeconds);
 fprintf('Absent A sequence positions = %d\n\n',missingA);
 
 fprintf('CHECK AGAINST THESIS RESULT\n');
-fprintf('====================================================\n');
 
 if abs(gapSeconds - 400.006) < 0.001
     fprintf('Reception gap : MATCH (400.006 s)\n');
@@ -411,7 +408,6 @@ exportgraphics( ...
     'ContentType','vector');
 
 fprintf('\nFIGURE EXPORTED\n');
-fprintf('====================================================\n');
 
 fprintf('PNG:\n%s\n\n',pngFile);
 fprintf('PDF:\n%s\n',pdfFile);
