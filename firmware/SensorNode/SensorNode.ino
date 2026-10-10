@@ -141,7 +141,6 @@ void sendSensorData() {
   bool sentSuccessfully = mesh.sendBroadcast(message);
 
   Serial.println();
-  Serial.println("========== SENSOR TRANSMISSION ==========");
   Serial.print("Sensor: ");
   Serial.println(SENSOR_NAME);
   Serial.print("ESP32 Node ID: ");
@@ -152,7 +151,6 @@ void sendSensorData() {
   Serial.println(message);
   Serial.print("Broadcast result: ");
   Serial.println(sentSuccessfully ? "SUCCESS" : "FAILED");
-  Serial.println("=========================================");
 }
 
 void receivedCallback(uint32_t from, String &msg) {
@@ -198,11 +196,9 @@ void setup() {
   digitalWrite(LED_BUILTIN, HIGH);
 
   Serial.println();
-  Serial.println("=========================================");
-  Serial.println("ENG402 SENSOR NODE STARTING");
+  Serial.println("SENSOR NODE STARTING");
   Serial.print("Sensor name: ");
   Serial.println(SENSOR_NAME);
-  Serial.println("=========================================");
 
   Wire.begin(I2C_SDA, I2C_SCL);
   initialiseBMP280();
