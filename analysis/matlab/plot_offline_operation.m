@@ -275,8 +275,6 @@ else
 end
 
 fprintf('\n');
-fprintf('GATE02 OFFLINE TEST SUMMARY\n');
-fprintf('====================================================\n');
 
 fprintf('Number of samples             : %d\n', ...
     numel(sampleTime));
@@ -325,7 +323,7 @@ if ~isempty(offlineSamples)
 
     fprintf('\n');
     fprintf('CONFIRMED NETWORK-DISCONNECTED INTERVAL\n');
-    fprintf('----------------------------------------------------\n');
+
 
     fprintf('First disconnected sample : %s\n', ...
         datestr( ...
@@ -350,7 +348,7 @@ end
 
 fprintf('\n');
 fprintf('PROCESSING OUTPUT UPDATES DURING TEST\n');
-fprintf('----------------------------------------------------\n');
+
 
 if isempty(processedUpdateTime)
 
@@ -591,7 +589,6 @@ exportgraphics( ...
 
 fprintf('\n');
 fprintf('FIGURE EXPORTED\n');
-fprintf('====================================================\n');
 
 fprintf('PNG:\n%s\n\n',pngFile);
 
