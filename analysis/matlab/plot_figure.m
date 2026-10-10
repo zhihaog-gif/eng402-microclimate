@@ -120,7 +120,7 @@ smoothCross = find( ...
     'first');
 
 fprintf('COLD-EVENT ANALYSIS\n');
-fprintf('====================================================\n');
+
 
 fprintf('Plot start : %s\n', ...
     datestr(W.receive_dt(1),'yyyy-mm-dd HH:MM:SS.FFF'));
@@ -276,7 +276,7 @@ exportgraphics( ...
 
 fprintf('\n');
 fprintf('FIGURE EXPORTED\n');
-fprintf('====================================================\n');
+
 
 fprintf('PNG:\n%s\n\n',pngFile);
 
